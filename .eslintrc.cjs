@@ -36,5 +36,6 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'jsx-quotes': ['error', 'prefer-single'],
   },
 };
