@@ -38,6 +38,7 @@ module.exports = {
     ],
     'jsx-quotes': ['warn', 'prefer-single'],
     'no-unused-vars': 'warn',
+    'react/prop-types': 'off',
     'prettier/prettier': 'warn',
   },
 };
