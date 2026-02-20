@@ -39,6 +39,14 @@ module.exports = {
     'jsx-quotes': ['warn', 'prefer-single'],
     'no-unused-vars': 'warn',
     'react/prop-types': 'off',
-    'prettier/prettier': 'warn',
+    //'prettier/prettier': 'warn',
+    'jsx-quotes': ['warn', 'prefer-single'],
+    'prettier/prettier': [
+      'warn',
+      {
+        singleQuote: true,
+        jsxSingleQuote: true,
+      },
+    ],
   },
 };
