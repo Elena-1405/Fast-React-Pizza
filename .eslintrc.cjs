@@ -8,11 +8,9 @@ module.exports = {
 
   extends: [
     'eslint:recommended',
-
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
-
     'plugin:prettier/recommended',
   ],
 
@@ -36,17 +34,20 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    'jsx-quotes': ['warn', 'prefer-single'],
     'no-unused-vars': 'warn',
     'react/prop-types': 'off',
-    //'prettier/prettier': 'warn',
-    'jsx-quotes': ['warn', 'prefer-single'],
     'prettier/prettier': [
       'warn',
-      {
-        singleQuote: true,
-        jsxSingleQuote: true,
-      },
+      // {
+      //   singleQuote: true,
+      //   jsxSingleQuote: true,
+      //   semi: true,
+      //   trailingComma: "es5",
+      //   printWidth: 80,
+      //   tabWidth: 2,
+      //   plugins: ["prettier-plugin-tailwindcss"],
+      //   tailwindConfig: "./tailwind.config.js",
+      // },
     ],
   },
 };

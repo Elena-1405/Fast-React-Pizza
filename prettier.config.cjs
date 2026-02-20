@@ -1,8 +1,7 @@
-/** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').PluginOptions} */
-export default {
+module.exports = {
+  singleQuote: true,
   jsxSingleQuote: true,
   semi: true,
-  singleQuote: true,
   trailingComma: 'es5',
   printWidth: 80,
   tabWidth: 2,
