@@ -20,6 +20,7 @@ export async function getOrder(id) {
 
 export async function createOrder(newOrder) {
   try {
+    //console.log('Sending to API:', JSON.stringify(newOrder, null, 2));
     const res = await fetch(`${API_URL}/order`, {
       method: 'POST',
       body: JSON.stringify(newOrder),

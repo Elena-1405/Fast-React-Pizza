@@ -1,8 +1,12 @@
-//import { useState } from 'react';
+import { useState } from 'react';
 import { Form, redirect, useActionData, useNavigation } from 'react-router-dom';
 import { createOrder } from '../../services/apiRestaurant';
 import Button from '../../ui/Button';
 import { useSelector } from 'react-redux';
+import { clearCart, getCart, getTotalCartPrice } from '../cart/cartSlice';
+import EmptyCart from '../cart/EmptyCart';
+import { formatCurrency } from '../../utils/helpers';
+import store from '../../store';
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -10,39 +14,20 @@ const isValidPhone = (str) =>
     str
   );
 
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: 'Mediterranean',
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: 'Vegetale',
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: 'Spinach and Mushroom',
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
-
 function CreateOrder() {
+  const [withPriority, setWithPriority] = useState(false);
   const username = useSelector((state) => state.user.username);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
 
   const formErrors = useActionData();
 
-  // const [withPriority, setWithPriority] = useState(false);
-  const cart = fakeCart;
+  const cart = useSelector(getCart);
+  const totalCartPrice = useSelector(getTotalCartPrice);
+  const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
+  const totalPrice = totalCartPrice + priorityPrice;
+
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className='px-4 py-6'>
@@ -93,8 +78,8 @@ function CreateOrder() {
             name='priority'
             id='priority'
             className='h-6 w-6 accent-yellow-400 focus:outline-none focus:ring focus:ring-yellow-400 focus:ring-offset-1'
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)}
           />
           <label htmlFor='priority' className='font-medium'>
             Want to you give your order priority?
@@ -104,7 +89,9 @@ function CreateOrder() {
         <div>
           <input type='hidden' name='cart' value={JSON.stringify(cart)} />
           <Button type='primary' disabled={isSubmitting}>
-            {isSubmitting ? 'Placing order...' : 'Order now'}
+            {isSubmitting
+              ? 'Placing order...'
+              : `Order now from ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>
@@ -116,21 +103,37 @@ export async function action({ request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
+  // 1. Извлекаем сырую корзину из скрытого поля формы
+  const rawCart = JSON.parse(data.cart);
+
+  // 2. Формируем объект заказа так, как того требует API
   const order = {
-    ...data,
-    cart: JSON.parse(data.cart),
-    priority: data.priority === 'on',
+    customer: data.customer,
+    phone: data.phone,
+    address: data.address,
+    priority: data.priority === 'true',
+    cart: rawCart.map((item) => ({
+      pizzaId: item.id, // API ожидает pizzaId
+      name: item.name,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      totalPrice: item.totalPrice,
+    })),
   };
+
+  //console.log('Final Order Object:', order); //в консоли браузера, что в поле cart теперь есть pizzaId
 
   const errors = {};
   if (!isValidPhone(order.phone))
-    errors.phone =
-      'Please insert the correct phone number. We might need to contact you.';
+    errors.phone = 'Please insert the correct phone number.';
 
   if (Object.keys(errors).length > 0) return errors;
 
+  // 3. Отправляем очищенный объект
   const newOrder = await createOrder(order);
 
+  store.dispatch(clearCart());
+  // 4. После успешного создания перенаправляем
   return redirect(`/order/${newOrder.id}`);
 }
 
