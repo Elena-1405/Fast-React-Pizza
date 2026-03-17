@@ -103,10 +103,8 @@ export async function action({ request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
-  // 1. Извлекаем сырую корзину из скрытого поля формы
   const rawCart = JSON.parse(data.cart);
 
-  // 2. Формируем объект заказа так, как того требует API
   const order = {
     customer: data.customer,
     phone: data.phone,
@@ -129,11 +127,9 @@ export async function action({ request }) {
 
   if (Object.keys(errors).length > 0) return errors;
 
-  // 3. Отправляем очищенный объект
   const newOrder = await createOrder(order);
 
   store.dispatch(clearCart());
-  // 4. После успешного создания перенаправляем
   return redirect(`/order/${newOrder.id}`);
 }
 
