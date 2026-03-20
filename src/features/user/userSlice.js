@@ -3,7 +3,6 @@ import { getAddress } from '../../services/apiGeocoding';
 
 function getPosition() {
   return new Promise(function (resolve, reject) {
-    console.log('TRYING GEOLOCATION');
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 }
@@ -11,7 +10,6 @@ function getPosition() {
 export const fetchAddress = createAsyncThunk(
   'user/fetchAddress',
   async function (_, { rejectWithValue }) {
-    console.log('FETCH ADDRESS START');
     try {
       const positionObj = await getPosition();
 

@@ -5,8 +5,12 @@ import { deleteItem } from './cartSlice';
 function DeleteItem({ id }) {
   const dispatch = useDispatch();
 
+  function onDeleteItem() {
+    dispatch(deleteItem(id));
+  }
+
   return (
-    <Button type='small' onClick={() => dispatch(deleteItem(id))}>
+    <Button type='small' onClick={onDeleteItem}>
       Delete
     </Button>
   );
