@@ -17,6 +17,8 @@ const isValidPhone = (str) =>
 
 function CreateOrder() {
   const [withPriority, setWithPriority] = useState(false);
+  const [isTypingAddress, setIsTypingAddress] = useState(false);
+
   const {
     username,
     status: addressStatus,
@@ -43,6 +45,20 @@ function CreateOrder() {
   function getPosition(e) {
     e.preventDefault();
     dispatch(fetchAddress());
+  }
+
+  function onTypingAddress(e) {
+    setIsTypingAddress(e.target.value.length > 0);
+  }
+
+  function handleGetPosition(e) {
+    setIsTypingAddress(false);
+
+    getPosition(e);
+  }
+
+  function onSetWithPriority(e) {
+    setWithPriority(e.target.checked);
   }
 
   return (
@@ -85,27 +101,29 @@ function CreateOrder() {
             <div className='grow'>
               <input
                 className='input w-full'
+                key={address}
                 type='text'
                 name='address'
                 defaultValue={address}
                 disabled={isLoadingAddress}
+                onChange={onTypingAddress}
                 required
               />
             </div>
 
-            {!position.latitude && !position.longtitude && (
+            {!position.latitude && !position.longitude && (
               <span className='absolute bottom-[3px] right-[3px] z-20 md:right-[5px] md:top-[5px]'>
                 <Button
                   disabled={isLoadingAddress}
                   type='small'
-                  onClick={getPosition}
+                  onClick={handleGetPosition}
                 >
                   Get position
                 </Button>
               </span>
             )}
           </div>
-          {addressStatus === 'error' && (
+          {addressStatus === 'error' && !isTypingAddress && (
             <p className='mt-2 rounded-md bg-red-100 p-2 text-xs text-red-700 sm:ml-40'>
               {errorAddress}
             </p>
@@ -119,7 +137,7 @@ function CreateOrder() {
             id='priority'
             className='h-6 w-6 accent-yellow-400 focus:outline-none focus:ring focus:ring-yellow-400 focus:ring-offset-1'
             value={withPriority}
-            onChange={(e) => setWithPriority(e.target.checked)}
+            onChange={onSetWithPriority}
           />
           <label htmlFor='priority' className='font-medium'>
             Want to you give your order priority?
@@ -132,8 +150,8 @@ function CreateOrder() {
             type='hidden'
             name='position'
             value={
-              position.latitude && position.longtitude
-                ? `${position.latitude}, ${position.longtitude}`
+              position.latitude && position.longitude
+                ? `${position.latitude}, ${position.longitude}`
                 : ''
             }
           />
