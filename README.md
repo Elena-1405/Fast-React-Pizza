@@ -124,4 +124,4 @@ npm run dev
 
 ИЛИ
 
-## https://fastreactpizza-delivery.netlify.app
+https://fastreactpizza-delivery.netlify.app
