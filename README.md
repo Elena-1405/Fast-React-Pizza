@@ -57,6 +57,10 @@ npm install
 npm run dev
 ```
 
+OR
+go to
+https://fastreactpizza-delivery.netlify.app
+
 ---
 
 # 🇷🇺 Русская версия
@@ -118,4 +122,6 @@ npm install
 npm run dev
 ```
 
----
+ИЛИ
+
+## https://fastreactpizza-delivery.netlify.app
